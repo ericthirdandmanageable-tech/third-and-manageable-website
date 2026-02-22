@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const footerLinks = [
     { name: "Home", href: "/" },
-    { name: "Spaces", href: "/spaces" },
+    { name: "Spaces (Coming Soon)", href: "/spaces" },
     { name: "App", href: "/app" },
     { name: "Merch", href: "/merch" },
     { name: "Community", href: "/community" },
@@ -15,6 +15,13 @@ const footerLinks = [
 const legalLinks = [
     { name: "Privacy Policy", href: "/privacy" },
     { name: "Terms & Conditions", href: "/terms" },
+];
+
+const socialLinks = [
+    {
+        name: "Instagram",
+        href: "https://www.instagram.com/_official3andm?igsh=MXUxaXM1cnk5OWl1bw%3D%3D&utm_source=qr",
+    },
 ];
 
 export default function Footer() {
@@ -130,9 +137,24 @@ export default function Footer() {
                         ))}
                     </nav>
 
+                    {/* Social Links */}
+                    <nav className="flex flex-wrap justify-center gap-6">
+                        {socialLinks.map((link) => (
+                            <a
+                                key={link.name}
+                                href={link.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-sm text-white/40 hover:text-white transition-colors"
+                            >
+                                {link.name}
+                            </a>
+                        ))}
+                    </nav>
+
                     {/* Copyright */}
                     <p className="text-sm text-white/30">
-                        © {new Date().getFullYear()} Third & Manageable. All rights reserved.
+                        (c) {new Date().getFullYear()} Third & Manageable. All rights reserved.
                     </p>
                 </div>
             </div>

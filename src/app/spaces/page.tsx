@@ -42,19 +42,19 @@ const features = [
         title: "Live Sports Viewing",
         description: "Multiple screens showing live games, keeping you connected to the sports world you know and love.",
         icon: TvIcon,
-        comingSoon: false
+        comingSoon: true
     },
     {
         title: "Community Events",
         description: "Regular meetups, watch parties, and networking events designed for athletes and former athletes.",
         icon: UsersIcon,
-        comingSoon: false
+        comingSoon: true
     },
     {
         title: "Relaxed Atmosphere",
         description: "A welcoming space to decompress, connect with peers, or simply enjoy a moment of calm.",
         icon: CoffeeIcon,
-        comingSoon: false
+        comingSoon: true
     }
 ];
 
@@ -87,13 +87,22 @@ export default function SpacesPage() {
                     </div>
 
                     <div className="relative z-10 max-w-5xl mx-auto text-center">
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: 0.1 }}
+                            className="mb-6"
+                        >
+                            <span className="coming-soon-badge text-sm px-4 py-1.5">Coming Soon</span>
+                        </motion.div>
+
                         <motion.p
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.2 }}
                             className="text-white/40 text-sm md:text-base font-medium tracking-widest uppercase mb-6"
                         >
-                            Physical Wellness Lounges
+                            Physical Wellness Lounges (Coming Soon)
                         </motion.p>
 
                         <motion.h1
@@ -112,8 +121,8 @@ export default function SpacesPage() {
                             transition={{ duration: 0.6, delay: 0.6 }}
                             className="text-lg md:text-xl text-white/50 max-w-3xl mx-auto"
                         >
-                            Community-driven wellness lounges designed specifically for athletes and former athletes.
-                            A place where you belong.
+                            Community-driven wellness lounges designed specifically for athletes and former athletes, coming soon.
+                            A place where you will belong.
                         </motion.p>
                     </div>
                 </section>
@@ -184,10 +193,10 @@ export default function SpacesPage() {
                             className="text-center mb-16"
                         >
                             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-[#040485]">
-                                More Than a Café
+                                More Than a Cafe (Coming Soon)
                             </h2>
                             <p className="text-lg text-[#040485]/60 max-w-2xl mx-auto">
-                                Each location recreates the locker-room sense of belonging in everyday life.
+                                Each location is coming soon and recreates the locker-room sense of belonging in everyday life.
                             </p>
                         </motion.div>
 
@@ -228,7 +237,7 @@ export default function SpacesPage() {
                         <p className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
                             &quot;Think of it as an upscale sports-lounge atmosphere centered on{" "}
                             <span className="font-light text-white/50">wellness, connection, and culture</span>{" "}
-                            — not therapy.&quot;
+                            â€” not therapy.&quot;
                         </p>
                     </motion.div>
                 </section>
@@ -237,3 +246,5 @@ export default function SpacesPage() {
         </>
     );
 }
+
+

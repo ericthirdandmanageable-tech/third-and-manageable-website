@@ -188,7 +188,7 @@ export default function CommunityPage() {
                                 Community Pillars
                             </h2>
                             <p className="text-lg text-[#040485]/60 max-w-2xl mx-auto">
-                                Across the app and physical spaces, community connects everything.
+                                Across the app and physical spaces (coming soon), community connects everything.
                             </p>
                         </motion.div>
 

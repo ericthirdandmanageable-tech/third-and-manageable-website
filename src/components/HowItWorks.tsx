@@ -33,14 +33,14 @@ const phases = [
     },
     {
         number: "03",
-        title: "Community & Physical Spaces",
+        title: "Community & Physical Spaces (Coming Soon)",
         subtitle: "Belonging",
-        description: "As the platform expands, athletes gain access to peer communities, group accountability, shared experiences, and in-person physical spaces that feel like athlete environments.",
+        description: "As the platform expands, athletes gain access to peer communities, group accountability, shared experiences, and in-person physical spaces (coming soon) that feel like athlete environments.",
         features: [
             "Peer communities",
             "Group accountability",
             "Shared experiences",
-            "Physical wellness hubs",
+            "Physical wellness hubs (coming soon)",
         ],
         note: "Recreating the locker-room sense of belonging in a new life context.",
     },

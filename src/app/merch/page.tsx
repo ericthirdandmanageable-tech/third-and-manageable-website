@@ -88,7 +88,7 @@ export default function MerchPage() {
                             transition={{ duration: 0.6, delay: 0.6 }}
                             className="text-lg md:text-xl text-white/50 max-w-3xl mx-auto"
                         >
-                            Premium merchandise that extends the Third & Manageable identity beyond our physical spaces.
+                            Premium merchandise that extends the Third & Manageable identity beyond our physical spaces (coming soon).
                             Represent the culture wherever you go.
                         </motion.p>
                     </div>
@@ -136,7 +136,7 @@ export default function MerchPage() {
                                 Product Collections
                             </h2>
                             <p className="text-lg text-[#040485]/60 max-w-2xl mx-auto">
-                                Available in our physical lounges and online. Each piece reinforces identity and community.
+                                Available in our physical lounges (coming soon) and online. Each piece reinforces identity and community.
                             </p>
                         </motion.div>
 

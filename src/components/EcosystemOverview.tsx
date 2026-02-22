@@ -32,12 +32,12 @@ const UsersIcon = () => (
 
 const ecosystemItems = [
     {
-        title: "Physical Spaces",
+        title: "Physical Spaces (Coming Soon)",
         description: "Community wellness lounges designed for athletes",
         href: "/spaces",
         image: "/store.jpg",
         icon: BuildingIcon,
-        comingSoon: false
+        comingSoon: true
     },
     {
         title: "Mobile App",
@@ -86,7 +86,7 @@ export default function EcosystemOverview() {
                         More Than an App
                     </h2>
                     <p className="text-lg md:text-xl text-white/50 max-w-3xl mx-auto">
-                        Third & Manageable combines digital tools, physical spaces, merchandise,
+                        Third & Manageable combines digital tools, physical spaces (coming soon), merchandise,
                         and community into one unified experience.
                     </p>
                 </motion.div>

@@ -16,9 +16,9 @@ const solutions = [
         ),
     },
     {
-        title: "Physical Spaces",
+        title: "Physical Spaces (Coming Soon)",
         subtitle: "Brick-and-Mortar",
-        description: "Wellness environments that feel familiar to athletes — structured, purposeful, and designed for community connection.",
+        description: "Wellness environments that feel familiar to athletes, coming soon and designed for structured, purposeful community connection.",
         icon: (
             <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -65,7 +65,7 @@ export default function SolutionSection() {
                         Three Connected Experiences
                     </h2>
                     <p className="text-lg md:text-xl text-white/50 max-w-3xl mx-auto">
-                        Third & Manageable combines digital, physical, and community elements
+                        Third & Manageable combines digital, physical (coming soon), and community elements
                         to create a comprehensive support system.
                     </p>
                 </motion.div>
