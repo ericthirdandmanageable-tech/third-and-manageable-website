@@ -83,7 +83,7 @@ export default function CommunityPage() {
                         <motion.div
                             className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full"
                             style={{
-                                background: "radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%)",
+                                background: "radial-gradient(circle, rgba(6,6,184,0.3) 0%, transparent 70%)",
                             }}
                             animate={{
                                 scale: [1, 1.1, 1],
@@ -110,7 +110,7 @@ export default function CommunityPage() {
                                     src="/third-and-manageable-logo.png"
                                     alt="Third & Manageable Logo"
                                     fill
-                                    className="object-contain invert brightness-0 invert"
+                                    className="object-contain brightness-0 invert"
                                 />
                             </div>
                         </motion.div>
@@ -119,7 +119,7 @@ export default function CommunityPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.2 }}
-                            className="text-muted text-sm md:text-base font-medium tracking-widest uppercase mb-6"
+                            className="text-white/40 text-sm md:text-base font-medium tracking-widest uppercase mb-6"
                         >
                             The Heart of the Brand
                         </motion.p>
@@ -138,12 +138,41 @@ export default function CommunityPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.6 }}
-                            className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto"
+                            className="text-lg md:text-xl text-white/50 max-w-3xl mx-auto"
                         >
                             Community is the heart of everything we do. Because athletes thrive in teams,
                             not in isolation.
                         </motion.p>
                     </div>
+                </section>
+
+                {/* Community Photo */}
+                <section className="py-12 px-6">
+                    <motion.div
+                        initial={{ opacity: 0, y: 40 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
+                        className="max-w-5xl mx-auto"
+                    >
+                        <div className="relative h-[400px] md:h-[500px] rounded-3xl overflow-hidden group">
+                            <Image
+                                src="/athlete-community.png"
+                                alt="Third & Manageable Athlete Community"
+                                fill
+                                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#040485]/70 via-[#040485]/20 to-transparent" />
+                            <div className="absolute bottom-8 left-8 right-8">
+                                <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                                    Stronger Together
+                                </h3>
+                                <p className="text-lg text-white/70">
+                                    Athletes supporting athletes through every transition
+                                </p>
+                            </div>
+                        </div>
+                    </motion.div>
                 </section>
 
                 {/* Pillars */}
@@ -155,10 +184,10 @@ export default function CommunityPage() {
                             transition={{ duration: 0.6 }}
                             className="text-center mb-16"
                         >
-                            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-black">
+                            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-[#040485]">
                                 Community Pillars
                             </h2>
-                            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                            <p className="text-lg text-[#040485]/60 max-w-2xl mx-auto">
                                 Across the app and physical spaces, community connects everything.
                             </p>
                         </motion.div>
@@ -170,11 +199,11 @@ export default function CommunityPage() {
                                     initial={{ opacity: 0, y: 30 }}
                                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                                     transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
-                                    className="p-8 bg-black text-white rounded-2xl hover:scale-105 transition-transform duration-300"
+                                    className="p-8 bg-[#040485] text-white rounded-2xl hover:scale-105 transition-transform duration-300 shadow-lg shadow-[#040485]/20"
                                 >
                                     <div className="mb-4 text-white"><pillar.icon /></div>
                                     <h3 className="text-2xl font-bold mb-3">{pillar.title}</h3>
-                                    <p className="text-gray-400 text-lg">{pillar.description}</p>
+                                    <p className="text-white/50 text-lg">{pillar.description}</p>
                                 </motion.div>
                             ))}
                         </div>
@@ -201,10 +230,10 @@ export default function CommunityPage() {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ delay: index * 0.1 }}
-                                    className="p-8 border border-white/20 rounded-2xl"
+                                    className="p-8 border border-white/20 rounded-2xl hover:border-white/40 transition-colors"
                                 >
-                                    <p className="text-lg mb-6 text-gray-300">&quot;{testimonial.quote}&quot;</p>
-                                    <p className="text-sm text-gray-500">— {testimonial.author}</p>
+                                    <p className="text-lg mb-6 text-white/70">&quot;{testimonial.quote}&quot;</p>
+                                    <p className="text-sm text-white/40">— {testimonial.author}</p>
                                 </motion.div>
                             ))}
                         </div>
@@ -220,9 +249,9 @@ export default function CommunityPage() {
                         transition={{ duration: 0.8 }}
                         className="max-w-4xl mx-auto text-center"
                     >
-                        <p className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-black">
-                            &quot;You don&apos;t need to be broken.{" "}
-                            <span className="font-light text-gray-500">You just need a bridge.</span>&quot;
+                        <p className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-[#040485]">
+                            &quot;You&apos;re not broken.{" "}
+                            <span className="font-light text-[#040485]/50">You just need a bridge.</span>&quot;
                         </p>
                     </motion.div>
                 </section>
@@ -236,12 +265,12 @@ export default function CommunityPage() {
                         className="max-w-3xl mx-auto text-center"
                     >
                         <h2 className="text-3xl md:text-4xl font-bold mb-6">Join the Community</h2>
-                        <p className="text-gray-400 text-lg mb-8">
-                            Be part of a movement that understands where you've been and supports where you're going.
+                        <p className="text-white/50 text-lg mb-8">
+                            Be part of a movement that understands where you&apos;ve been and supports where you&apos;re going.
                         </p>
                         <a
                             href="#"
-                            className="inline-flex items-center justify-center px-10 py-4 bg-white text-black text-lg font-semibold rounded-xl hover:bg-gray-100 transition-colors"
+                            className="inline-flex items-center justify-center px-10 py-4 bg-white text-[#040485] text-lg font-semibold rounded-xl hover:bg-gray-100 transition-colors"
                         >
                             Get Started
                         </a>

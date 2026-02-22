@@ -46,13 +46,13 @@ export default function Navbar() {
                                 src="/third-and-manageable-logo.png"
                                 alt="Third & Manageable Logo"
                                 fill
-                                className="object-contain invert brightness-0 invert"
+                                className="object-contain brightness-0 invert"
                                 priority
                             />
                         </div>
                         <span className="text-sm sm:text-xl md:text-2xl font-bold tracking-tight whitespace-nowrap">
                             <span className="font-light">THIRD</span>
-                            <span className="text-muted mx-1 sm:mx-2">&</span>
+                            <span className="text-white/50 mx-1 sm:mx-2">&</span>
                             <span>M.</span>
                         </span>
                     </Link>
@@ -68,7 +68,7 @@ export default function Navbar() {
                                 {/* Background fill on hover */}
                                 <span className="absolute inset-0 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out origin-left rounded-md" />
                                 {/* Text */}
-                                <span className="relative z-10 group-hover:text-black transition-colors duration-300">
+                                <span className="relative z-10 group-hover:text-[#040485] transition-colors duration-300">
                                     {link.name}
                                 </span>
                             </Link>
@@ -77,7 +77,7 @@ export default function Navbar() {
                         {/* CTA Button */}
                         <motion.a
                             href="#download"
-                            className="ml-4 px-6 py-2.5 bg-white text-black text-sm font-semibold rounded-md hover:bg-gray-200 transition-colors duration-300"
+                            className="ml-4 px-6 py-2.5 bg-white text-[#040485] text-sm font-semibold rounded-md hover:bg-gray-100 transition-colors duration-300"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                         >
@@ -123,7 +123,7 @@ export default function Navbar() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.3 }}
-                        className="fixed inset-0 z-40 bg-black pt-24 px-6 md:hidden"
+                        className="fixed inset-0 z-40 bg-[#040485] pt-24 px-6 md:hidden"
                     >
                         <div className="flex flex-col gap-6">
                             {navLinks.map((link, index) => (
@@ -134,7 +134,7 @@ export default function Navbar() {
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: index * 0.1 }}
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className="text-3xl font-light text-white hover:text-gray-300 transition-colors"
+                                    className="text-3xl font-light text-white hover:text-white/70 transition-colors"
                                 >
                                     {link.name}
                                 </motion.a>
@@ -145,7 +145,7 @@ export default function Navbar() {
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: 0.4 }}
                                 onClick={() => setIsMobileMenuOpen(false)}
-                                className="mt-4 inline-flex items-center justify-center px-8 py-4 bg-white text-black text-lg font-semibold rounded-md"
+                                className="mt-4 inline-flex items-center justify-center px-8 py-4 bg-white text-[#040485] text-lg font-semibold rounded-md"
                             >
                                 Get Started
                             </motion.a>

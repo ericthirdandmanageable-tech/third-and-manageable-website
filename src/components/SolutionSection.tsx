@@ -49,7 +49,7 @@ export default function SolutionSection() {
     const isInView = useInView(ref, { once: true, margin: "-100px" });
 
     return (
-        <section className="section bg-black">
+        <section className="section bg-[#040485]">
             <div className="max-w-6xl mx-auto" ref={ref}>
                 {/* Section Header */}
                 <motion.div
@@ -58,13 +58,13 @@ export default function SolutionSection() {
                     transition={{ duration: 0.6 }}
                     className="text-center mb-16"
                 >
-                    <span className="text-sm font-medium tracking-widest uppercase text-muted mb-4 block">
+                    <span className="text-sm font-medium tracking-widest uppercase text-white/40 mb-4 block">
                         The Solution
                     </span>
                     <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-white">
                         Three Connected Experiences
                     </h2>
-                    <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto">
+                    <p className="text-lg md:text-xl text-white/50 max-w-3xl mx-auto">
                         Third & Manageable combines digital, physical, and community elements
                         to create a comprehensive support system.
                     </p>
@@ -83,13 +83,13 @@ export default function SolutionSection() {
                             <div className="text-white mb-6 group-hover:scale-110 transition-transform duration-300">
                                 {solution.icon}
                             </div>
-                            <p className="text-sm font-medium tracking-widest uppercase text-muted mb-2">
+                            <p className="text-sm font-medium tracking-widest uppercase text-white/40 mb-2">
                                 {solution.subtitle}
                             </p>
                             <h3 className="text-2xl font-bold text-white mb-4">
                                 {solution.title}
                             </h3>
-                            <p className="text-gray-400 leading-relaxed">
+                            <p className="text-white/50 leading-relaxed">
                                 {solution.description}
                             </p>
                         </motion.div>
@@ -103,7 +103,7 @@ export default function SolutionSection() {
                     transition={{ duration: 0.6, delay: 0.8 }}
                     className="text-center"
                 >
-                    <p className="text-sm font-medium tracking-widest uppercase text-muted mb-8">
+                    <p className="text-sm font-medium tracking-widest uppercase text-white/40 mb-8">
                         These Elements Work Together to Restore
                     </p>
                     <div className="flex flex-wrap justify-center gap-4">
@@ -113,7 +113,7 @@ export default function SolutionSection() {
                                 initial={{ opacity: 0, scale: 0.8 }}
                                 animate={isInView ? { opacity: 1, scale: 1 } : {}}
                                 transition={{ duration: 0.4, delay: 1 + index * 0.1 }}
-                                className="px-6 py-3 bg-white text-black rounded-full text-sm md:text-base font-medium"
+                                className="px-6 py-3 bg-white text-[#040485] rounded-full text-sm md:text-base font-medium"
                             >
                                 {item}
                             </motion.span>

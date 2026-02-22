@@ -36,28 +36,32 @@ const ecosystemItems = [
         description: "Community wellness lounges designed for athletes",
         href: "/spaces",
         image: "/store.jpg",
-        icon: BuildingIcon
+        icon: BuildingIcon,
+        comingSoon: false
     },
     {
         title: "Mobile App",
         description: "Daily mindset and structure tools",
         href: "/app",
-        image: null,
-        icon: PhoneIcon
+        image: "/app-welcome-screen.png",
+        icon: PhoneIcon,
+        comingSoon: false
     },
     {
         title: "Merchandise",
         description: "Premium lifestyle brand and apparel",
         href: "/merch",
         image: "/merch.jpg",
-        icon: ShirtIcon
+        icon: ShirtIcon,
+        comingSoon: true
     },
     {
         title: "Community",
         description: "Peer connection and accountability",
         href: "/community",
-        image: null,
-        icon: UsersIcon
+        image: "/athlete-community.png",
+        icon: UsersIcon,
+        comingSoon: false
     }
 ];
 
@@ -75,13 +79,13 @@ export default function EcosystemOverview() {
                     transition={{ duration: 0.6 }}
                     className="text-center mb-16"
                 >
-                    <span className="text-sm font-medium tracking-widest uppercase text-gray-500 mb-4 block">
+                    <span className="text-sm font-medium tracking-widest uppercase text-white/40 mb-4 block">
                         The Ecosystem
                     </span>
                     <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
                         More Than an App
                     </h2>
-                    <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto">
+                    <p className="text-lg md:text-xl text-white/50 max-w-3xl mx-auto">
                         Third & Manageable combines digital tools, physical spaces, merchandise,
                         and community into one unified experience.
                     </p>
@@ -109,10 +113,17 @@ export default function EcosystemOverview() {
                                             fill
                                             className="object-cover opacity-50 group-hover:opacity-70 transition-opacity duration-500"
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
+                                        <div className="absolute inset-0 bg-gradient-to-t from-[#040485] via-[#040485]/70 to-transparent" />
                                     </>
                                 ) : (
                                     <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent group-hover:from-white/15 transition-colors duration-300" />
+                                )}
+
+                                {/* Coming Soon Badge */}
+                                {item.comingSoon && (
+                                    <div className="absolute top-4 left-4 z-20">
+                                        <span className="coming-soon-badge">Coming Soon</span>
+                                    </div>
                                 )}
 
                                 {/* Content */}
@@ -121,12 +132,12 @@ export default function EcosystemOverview() {
                                     <h3 className="text-xl font-bold mb-2 group-hover:text-white transition-colors">
                                         {item.title}
                                     </h3>
-                                    <p className="text-gray-400 text-sm group-hover:text-gray-300 transition-colors">
+                                    <p className="text-white/50 text-sm group-hover:text-white/70 transition-colors">
                                         {item.description}
                                     </p>
 
                                     {/* Arrow */}
-                                    <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all duration-300">
+                                    <div className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white group-hover:text-[#040485] transition-all duration-300">
                                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                         </svg>

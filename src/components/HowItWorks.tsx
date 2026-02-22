@@ -60,13 +60,13 @@ export default function HowItWorks() {
                     transition={{ duration: 0.6 }}
                     className="text-center mb-16"
                 >
-                    <span className="text-sm font-medium tracking-widest uppercase text-gray-500 mb-4 block">
+                    <span className="text-sm font-medium tracking-widest uppercase text-[#040485]/50 mb-4 block">
                         The Journey
                     </span>
-                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-black">
+                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-[#040485]">
                         How It Works
                     </h2>
-                    <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+                    <p className="text-lg md:text-xl text-[#040485]/60 max-w-3xl mx-auto">
                         A phased approach that meets athletes where they are and guides them
                         to where they want to be.
                     </p>
@@ -82,39 +82,39 @@ export default function HowItWorks() {
                             transition={{ duration: 0.6, delay: 0.2 + index * 0.2 }}
                             className="group"
                         >
-                            <div className="grid md:grid-cols-12 gap-6 md:gap-8 items-start p-6 md:p-8 rounded-2xl bg-gray-50 border border-gray-100 hover:border-gray-300 transition-colors">
+                            <div className="grid md:grid-cols-12 gap-6 md:gap-8 items-start p-6 md:p-8 rounded-2xl bg-[#040485]/5 border border-[#040485]/10 hover:border-[#040485]/30 transition-colors">
                                 {/* Phase Number */}
                                 <div className="md:col-span-2">
-                                    <span className="text-6xl md:text-7xl font-bold text-gray-200 group-hover:text-black transition-colors duration-300">
+                                    <span className="text-6xl md:text-7xl font-bold text-[#040485]/15 group-hover:text-[#040485] transition-colors duration-300">
                                         {phase.number}
                                     </span>
                                 </div>
 
                                 {/* Content */}
                                 <div className="md:col-span-6">
-                                    <p className="text-sm font-medium tracking-widest uppercase text-gray-500 mb-2">
+                                    <p className="text-sm font-medium tracking-widest uppercase text-[#040485]/50 mb-2">
                                         Phase {phase.number} — {phase.subtitle}
                                     </p>
-                                    <h3 className="text-2xl md:text-3xl font-bold text-black mb-4">
+                                    <h3 className="text-2xl md:text-3xl font-bold text-[#040485] mb-4">
                                         {phase.title}
                                     </h3>
-                                    <p className="text-gray-600 leading-relaxed mb-4">
+                                    <p className="text-[#040485]/60 leading-relaxed mb-4">
                                         {phase.description}
                                     </p>
-                                    <p className="text-sm italic text-gray-500">
+                                    <p className="text-sm italic text-[#040485]/40">
                                         {phase.note}
                                     </p>
                                 </div>
 
                                 {/* Features */}
                                 <div className="md:col-span-4">
-                                    <p className="text-sm font-medium text-gray-500 mb-3">
+                                    <p className="text-sm font-medium text-[#040485]/50 mb-3">
                                         Key Elements
                                     </p>
                                     <ul className="space-y-2">
                                         {phase.features.map((feature, i) => (
-                                            <li key={i} className="flex items-center gap-3 text-gray-700">
-                                                <span className="w-1.5 h-1.5 bg-black rounded-full" />
+                                            <li key={i} className="flex items-center gap-3 text-[#040485]/70">
+                                                <span className="w-1.5 h-1.5 bg-[#040485] rounded-full" />
                                                 {feature}
                                             </li>
                                         ))}
@@ -129,7 +129,7 @@ export default function HowItWorks() {
                                         initial={{ height: 0 }}
                                         animate={isInView ? { height: 40 } : {}}
                                         transition={{ duration: 0.4, delay: 0.5 + index * 0.2 }}
-                                        className="w-px bg-gray-300"
+                                        className="w-px bg-[#040485]/20"
                                     />
                                 </div>
                             )}

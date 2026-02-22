@@ -12,9 +12,14 @@ const footerLinks = [
     { name: "Community", href: "/community" },
 ];
 
+const legalLinks = [
+    { name: "Privacy Policy", href: "/privacy" },
+    { name: "Terms & Conditions", href: "/terms" },
+];
+
 export default function Footer() {
     return (
-        <footer className="bg-black border-t border-white/10">
+        <footer className="bg-[#020256] border-t border-white/10">
             <div className="max-w-6xl mx-auto px-6 py-16">
                 {/* Top Section */}
                 <div className="grid md:grid-cols-2 gap-12 mb-16">
@@ -33,16 +38,16 @@ export default function Footer() {
                                         src="/third-and-manageable-logo.png"
                                         alt="Third & Manageable Logo"
                                         fill
-                                        className="object-contain invert brightness-0 invert"
+                                        className="object-contain brightness-0 invert"
                                     />
                                 </div>
                                 <h3 className="text-xl sm:text-2xl md:text-3xl font-bold">
                                     <span className="font-light">THIRD</span>
-                                    <span className="text-muted mx-1 sm:mx-2">&</span>
+                                    <span className="text-white/40 mx-1 sm:mx-2">&</span>
                                     <span>MANAGEABLE</span>
                                 </h3>
                             </div>
-                            <p className="text-gray-400 max-w-md leading-relaxed text-sm sm:text-base text-center sm:text-left">
+                            <p className="text-white/40 max-w-md leading-relaxed text-sm sm:text-base text-center sm:text-left">
                                 A wellness and transition platform for athletes who are moving
                                 out of competitive sports and into the next phase of their lives.
                             </p>
@@ -52,12 +57,14 @@ export default function Footer() {
                     {/* Right - Download Buttons */}
                     <div className="flex flex-col sm:flex-row gap-4 md:justify-end">
                         <motion.a
-                            href="#"
+                            href="https://apps.apple.com/app/third-and-manageable"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.6, delay: 0.1 }}
-                            className="flex items-center gap-3 px-6 py-3 bg-white text-black rounded-xl hover:bg-gray-100 transition-colors"
+                            className="flex items-center gap-3 px-6 py-3 bg-white text-[#040485] rounded-xl hover:bg-gray-100 transition-colors"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                         >
@@ -70,12 +77,14 @@ export default function Footer() {
                             </div>
                         </motion.a>
                         <motion.a
-                            href="#"
+                            href="https://play.google.com/store/apps/details?id=com.thirdandmanageable"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.6, delay: 0.2 }}
-                            className="flex items-center gap-3 px-6 py-3 bg-white text-black rounded-xl hover:bg-gray-100 transition-colors"
+                            className="flex items-center gap-3 px-6 py-3 bg-white text-[#040485] rounded-xl hover:bg-gray-100 transition-colors"
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                         >
@@ -101,7 +110,20 @@ export default function Footer() {
                             <Link
                                 key={link.name}
                                 href={link.href}
-                                className="text-sm text-gray-400 hover:text-white transition-colors"
+                                className="text-sm text-white/40 hover:text-white transition-colors"
+                            >
+                                {link.name}
+                            </Link>
+                        ))}
+                    </nav>
+
+                    {/* Legal Links */}
+                    <nav className="flex flex-wrap justify-center gap-6">
+                        {legalLinks.map((link) => (
+                            <Link
+                                key={link.name}
+                                href={link.href}
+                                className="text-sm text-white/30 hover:text-white transition-colors"
                             >
                                 {link.name}
                             </Link>
@@ -109,7 +131,7 @@ export default function Footer() {
                     </nav>
 
                     {/* Copyright */}
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-white/30">
                         © {new Date().getFullYear()} Third & Manageable. All rights reserved.
                     </p>
                 </div>

@@ -13,7 +13,7 @@ export default function Hero() {
             <div className="absolute inset-0 overflow-hidden">
                 {/* Subtle grid pattern */}
                 <div
-                    className="absolute inset-0 opacity-[0.03]"
+                    className="absolute inset-0 opacity-[0.04]"
                     style={{
                         backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
                               linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
@@ -24,7 +24,7 @@ export default function Hero() {
                 <motion.div
                     className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full"
                     style={{
-                        background: "radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%)",
+                        background: "radial-gradient(circle, rgba(6,6,184,0.3) 0%, transparent 70%)",
                     }}
                     animate={{
                         scale: [1, 1.1, 1],
@@ -32,6 +32,22 @@ export default function Hero() {
                     }}
                     transition={{
                         duration: 8,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                    }}
+                />
+                {/* Secondary orb */}
+                <motion.div
+                    className="absolute bottom-1/4 right-0 w-[600px] h-[600px] rounded-full"
+                    style={{
+                        background: "radial-gradient(circle, rgba(6,6,184,0.15) 0%, transparent 70%)",
+                    }}
+                    animate={{
+                        scale: [1.1, 1, 1.1],
+                        opacity: [0.2, 0.4, 0.2],
+                    }}
+                    transition={{
+                        duration: 10,
                         repeat: Infinity,
                         ease: "easeInOut",
                     }}
@@ -63,7 +79,7 @@ export default function Hero() {
                             src="/third-and-manageable-logo.png"
                             alt="Third & Manageable Logo"
                             fill
-                            className="object-contain invert brightness-0 invert drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]"
+                            className="object-contain brightness-0 invert drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]"
                             priority
                         />
                     </motion.div>
@@ -74,7 +90,7 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.2 }}
-                    className="text-muted text-sm md:text-base font-medium tracking-widest uppercase mb-6"
+                    className="text-white/60 text-sm md:text-base font-medium tracking-widest uppercase mb-6"
                 >
                     For Athletes in Transition
                 </motion.p>
@@ -87,7 +103,7 @@ export default function Hero() {
                     className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6 px-2"
                 >
                     <span className="font-light">THIRD</span>
-                    <span className="text-muted mx-1 sm:mx-3">&</span>
+                    <span className="text-white/50 mx-1 sm:mx-3">&</span>
                     <br className="sm:hidden" />
                     <span>MANAGEABLE</span>
                 </motion.h1>
@@ -97,7 +113,7 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.6 }}
-                    className="text-xl md:text-2xl lg:text-3xl text-muted font-light max-w-3xl mx-auto mb-12"
+                    className="text-xl md:text-2xl lg:text-3xl text-white/60 font-light max-w-3xl mx-auto mb-12"
                 >
                     Translate discipline into direction.
                 </motion.p>
@@ -107,7 +123,7 @@ export default function Hero() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.8 }}
-                    className="text-base md:text-lg text-gray-400 max-w-2xl mx-auto mb-12"
+                    className="text-base md:text-lg text-white/40 max-w-2xl mx-auto mb-12"
                 >
                     A wellness and transition platform for athletes who are ready to build
                     their next chapter with confidence, structure, and community.
@@ -123,8 +139,10 @@ export default function Hero() {
                 >
                     {/* iOS Button */}
                     <motion.a
-                        href="#"
-                        className="group flex items-center gap-3 px-8 py-4 bg-white text-black rounded-xl hover:bg-gray-100 transition-all duration-300"
+                        href="https://apps.apple.com/app/third-and-manageable"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex items-center gap-3 px-8 py-4 bg-white text-[#040485] rounded-xl hover:bg-gray-100 transition-all duration-300 shadow-lg shadow-white/10"
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
                     >
@@ -139,8 +157,10 @@ export default function Hero() {
 
                     {/* Android Button */}
                     <motion.a
-                        href="#"
-                        className="group flex items-center gap-3 px-8 py-4 bg-white text-black rounded-xl hover:bg-gray-100 transition-all duration-300"
+                        href="https://play.google.com/store/apps/details?id=com.thirdandmanageable"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex items-center gap-3 px-8 py-4 bg-white text-[#040485] rounded-xl hover:bg-gray-100 transition-all duration-300 shadow-lg shadow-white/10"
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
                     >
@@ -165,7 +185,7 @@ export default function Hero() {
                 <motion.div
                     animate={{ y: [0, 10, 0] }}
                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    className="flex flex-col items-center gap-2 text-muted"
+                    className="flex flex-col items-center gap-2 text-white/40"
                 >
                     <span className="text-xs tracking-widest uppercase">Scroll</span>
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

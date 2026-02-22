@@ -35,22 +35,26 @@ const features = [
     {
         title: "Smoothie & Wellness Bar",
         description: "Premium smoothies, healthy snacks, and wellness beverages crafted for peak performance and recovery.",
-        icon: DrinkIcon
+        icon: DrinkIcon,
+        comingSoon: true
     },
     {
         title: "Live Sports Viewing",
         description: "Multiple screens showing live games, keeping you connected to the sports world you know and love.",
-        icon: TvIcon
+        icon: TvIcon,
+        comingSoon: false
     },
     {
         title: "Community Events",
         description: "Regular meetups, watch parties, and networking events designed for athletes and former athletes.",
-        icon: UsersIcon
+        icon: UsersIcon,
+        comingSoon: false
     },
     {
         title: "Relaxed Atmosphere",
         description: "A welcoming space to decompress, connect with peers, or simply enjoy a moment of calm.",
-        icon: CoffeeIcon
+        icon: CoffeeIcon,
+        comingSoon: false
     }
 ];
 
@@ -68,7 +72,7 @@ export default function SpacesPage() {
                         <motion.div
                             className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full"
                             style={{
-                                background: "radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%)",
+                                background: "radial-gradient(circle, rgba(6,6,184,0.3) 0%, transparent 70%)",
                             }}
                             animate={{
                                 scale: [1, 1.1, 1],
@@ -87,7 +91,7 @@ export default function SpacesPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.2 }}
-                            className="text-muted text-sm md:text-base font-medium tracking-widest uppercase mb-6"
+                            className="text-white/40 text-sm md:text-base font-medium tracking-widest uppercase mb-6"
                         >
                             Physical Wellness Lounges
                         </motion.p>
@@ -106,7 +110,7 @@ export default function SpacesPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.6, delay: 0.6 }}
-                            className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto"
+                            className="text-lg md:text-xl text-white/50 max-w-3xl mx-auto"
                         >
                             Community-driven wellness lounges designed specifically for athletes and former athletes.
                             A place where you belong.
@@ -132,10 +136,10 @@ export default function SpacesPage() {
                                     fill
                                     className="object-cover transition-transform duration-700 group-hover:scale-105"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#040485]/60 via-transparent to-transparent" />
                                 <div className="absolute bottom-6 left-6 right-6">
                                     <h3 className="text-2xl font-bold text-white mb-2">Premium Atmosphere</h3>
-                                    <p className="text-gray-300">Upscale sports-lounge vibes centered on wellness</p>
+                                    <p className="text-white/70">Upscale sports-lounge vibes centered on wellness</p>
                                 </div>
                             </div>
 
@@ -148,7 +152,7 @@ export default function SpacesPage() {
                                         fill
                                         className="object-cover transition-transform duration-700 group-hover:scale-105"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-[#040485]/60 via-transparent to-transparent" />
                                     <div className="absolute bottom-4 left-4">
                                         <h3 className="text-xl font-bold text-white">Community Hub</h3>
                                     </div>
@@ -160,7 +164,7 @@ export default function SpacesPage() {
                                         fill
                                         className="object-cover transition-transform duration-700 group-hover:scale-105"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-[#040485]/60 via-transparent to-transparent" />
                                     <div className="absolute bottom-4 left-4">
                                         <h3 className="text-xl font-bold text-white">Relaxation Zone</h3>
                                     </div>
@@ -179,10 +183,10 @@ export default function SpacesPage() {
                             transition={{ duration: 0.6 }}
                             className="text-center mb-16"
                         >
-                            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-black">
+                            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-[#040485]">
                                 More Than a Café
                             </h2>
-                            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                            <p className="text-lg text-[#040485]/60 max-w-2xl mx-auto">
                                 Each location recreates the locker-room sense of belonging in everyday life.
                             </p>
                         </motion.div>
@@ -194,11 +198,18 @@ export default function SpacesPage() {
                                     initial={{ opacity: 0, y: 30 }}
                                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                                     transition={{ duration: 0.5, delay: 0.2 + index * 0.1 }}
-                                    className="p-8 bg-black text-white rounded-2xl"
+                                    className="relative p-8 bg-[#040485] text-white rounded-2xl shadow-lg shadow-[#040485]/20"
                                 >
+                                    {feature.comingSoon && (
+                                        <div className="absolute top-4 right-4">
+                                            <span className="px-3 py-1 bg-white text-[#040485] text-xs font-bold tracking-wider uppercase rounded-full">
+                                                Coming Soon
+                                            </span>
+                                        </div>
+                                    )}
                                     <div className="mb-4">{<feature.icon />}</div>
                                     <h3 className="text-xl font-bold mb-2">{feature.title}</h3>
-                                    <p className="text-gray-400">{feature.description}</p>
+                                    <p className="text-white/50">{feature.description}</p>
                                 </motion.div>
                             ))}
                         </div>
@@ -216,7 +227,7 @@ export default function SpacesPage() {
                     >
                         <p className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
                             &quot;Think of it as an upscale sports-lounge atmosphere centered on{" "}
-                            <span className="font-light text-gray-400">wellness, connection, and culture</span>{" "}
+                            <span className="font-light text-white/50">wellness, connection, and culture</span>{" "}
                             — not therapy.&quot;
                         </p>
                     </motion.div>
