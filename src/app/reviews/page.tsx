@@ -1,95 +1,34 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const GITHUB_OWNER = "ericthirdandmanageable-tech";
-const GITHUB_REPO = "third-and-manageable-website";
-const REVIEW_SUBMISSION_LABEL = "review-submission";
-const REVIEW_PUBLISHED_LABEL = "review-approved";
-const PUBLISHED_REVIEWS_API = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues?state=open&labels=${encodeURIComponent(REVIEW_PUBLISHED_LABEL)}&per_page=30&sort=created&direction=desc`;
+const STORAGE_KEY = "third_and_manageable_reviews_v1";
 
-type GitHubIssue = {
-    id: number;
-    html_url: string;
-    title: string;
-    body: string | null;
-    created_at: string;
-    user: {
-        login: string;
-    };
-    pull_request?: unknown;
-};
-
-type PublishedReview = {
-    id: number;
-    name: string;
-    rating: number;
-    review: string;
-    createdAt: string;
-    sourceUrl: string;
-};
-
-type ReviewFormState = {
+type Review = {
+    id: string;
     name: string;
     platform: string;
     rating: number;
-    review: string;
+    text: string;
+    createdAt: string;
 };
 
-const INITIAL_FORM_STATE: ReviewFormState = {
+type ReviewForm = {
+    name: string;
+    platform: string;
+    rating: number;
+    text: string;
+};
+
+const INITIAL_FORM: ReviewForm = {
     name: "",
     platform: "iOS",
     rating: 0,
-    review: "",
+    text: "",
 };
-
-function clampRating(value: number): number {
-    if (Number.isNaN(value)) return 5;
-    return Math.max(1, Math.min(5, value));
-}
-
-function extractSingleLineField(body: string, fieldName: string): string | null {
-    const pattern = new RegExp(`^${fieldName}:\\s*(.+)$`, "im");
-    const match = body.match(pattern);
-    return match?.[1]?.trim() ?? null;
-}
-
-function extractReviewText(body: string): string {
-    const match = body.match(/Review:\s*([\s\S]*?)(?:\n[A-Za-z][A-Za-z ]+:\s.*|$)/i);
-    if (!match?.[1]) {
-        return body.trim();
-    }
-    return match[1].trim();
-}
-
-function parsePublishedReview(issue: GitHubIssue): PublishedReview | null {
-    if (issue.pull_request) {
-        return null;
-    }
-
-    const body = issue.body ?? "";
-    const name = extractSingleLineField(body, "Name") || issue.user.login;
-    const ratingRaw = extractSingleLineField(body, "Rating");
-    const rating = clampRating(Number.parseInt(ratingRaw ?? "5", 10));
-    const review = extractReviewText(body);
-
-    if (!review) {
-        return null;
-    }
-
-    return {
-        id: issue.id,
-        name,
-        rating,
-        review,
-        createdAt: issue.created_at,
-        sourceUrl: issue.html_url,
-    };
-}
 
 function StarIcon({ filled, className = "w-6 h-6" }: { filled: boolean; className?: string }) {
     return (
@@ -110,57 +49,49 @@ function StarIcon({ filled, className = "w-6 h-6" }: { filled: boolean; classNam
 }
 
 export default function ReviewsPage() {
-    const [reviews, setReviews] = useState<PublishedReview[]>([]);
-    const [isLoadingReviews, setIsLoadingReviews] = useState(true);
-    const [loadError, setLoadError] = useState<string | null>(null);
-    const [form, setForm] = useState<ReviewFormState>(INITIAL_FORM_STATE);
-    const [submitError, setSubmitError] = useState<string | null>(null);
-    const [submitStarted, setSubmitStarted] = useState(false);
+    const [reviews, setReviews] = useState<Review[]>([]);
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [form, setForm] = useState<ReviewForm>(INITIAL_FORM);
+    const [formError, setFormError] = useState<string | null>(null);
 
     useEffect(() => {
-        const controller = new AbortController();
-
-        async function loadPublishedReviews() {
-            setIsLoadingReviews(true);
-            setLoadError(null);
-
-            try {
-                const response = await fetch(PUBLISHED_REVIEWS_API, {
-                    headers: {
-                        Accept: "application/vnd.github+json",
-                    },
-                    signal: controller.signal,
-                });
-
-                if (!response.ok) {
-                    throw new Error(`GitHub API error: ${response.status}`);
-                }
-
-                const issues = (await response.json()) as GitHubIssue[];
-                const parsedReviews = issues
-                    .map(parsePublishedReview)
-                    .filter((review): review is PublishedReview => review !== null);
-
-                setReviews(parsedReviews);
-            } catch (error) {
-                if (controller.signal.aborted) {
-                    return;
-                }
-                console.error(error);
-                setLoadError("Published reviews could not be loaded right now.");
-            } finally {
-                if (!controller.signal.aborted) {
-                    setIsLoadingReviews(false);
-                }
+        try {
+            const raw = window.localStorage.getItem(STORAGE_KEY);
+            if (!raw) {
+                setIsLoaded(true);
+                return;
             }
+
+            const parsed = JSON.parse(raw) as unknown;
+            if (Array.isArray(parsed)) {
+                const safeReviews = parsed.filter((item): item is Review => {
+                    return (
+                        typeof item === "object" &&
+                        item !== null &&
+                        typeof (item as Review).id === "string" &&
+                        typeof (item as Review).name === "string" &&
+                        typeof (item as Review).platform === "string" &&
+                        typeof (item as Review).rating === "number" &&
+                        typeof (item as Review).text === "string" &&
+                        typeof (item as Review).createdAt === "string"
+                    );
+                });
+                setReviews(safeReviews);
+            }
+        } catch (error) {
+            console.error("Failed to load reviews", error);
+        } finally {
+            setIsLoaded(true);
         }
-
-        loadPublishedReviews();
-
-        return () => {
-            controller.abort();
-        };
     }, []);
+
+    useEffect(() => {
+        if (!isLoaded) {
+            return;
+        }
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews));
+    }, [reviews, isLoaded]);
 
     const averageRating = useMemo(() => {
         if (reviews.length === 0) {
@@ -170,45 +101,38 @@ export default function ReviewsPage() {
         return (total / reviews.length).toFixed(1);
     }, [reviews]);
 
-    function openGitHubSubmission() {
-        const trimmedReview = form.review.trim();
+    function closeModal() {
+        setIsModalOpen(false);
+        setFormError(null);
+    }
 
+    function submitReview(event: React.FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+
+        const reviewText = form.text.trim();
         if (form.rating < 1 || form.rating > 5) {
-            setSubmitError("Please choose a star rating before submitting.");
+            setFormError("Please select a star rating.");
             return;
         }
 
-        if (trimmedReview.length < 20) {
-            setSubmitError("Please write at least 20 characters so the review is useful.");
+        if (reviewText.length < 10) {
+            setFormError("Please write at least 10 characters.");
             return;
         }
 
-        setSubmitError(null);
+        const nextReview: Review = {
+            id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+            name: form.name.trim() || "Anonymous",
+            platform: form.platform,
+            rating: form.rating,
+            text: reviewText,
+            createdAt: new Date().toISOString(),
+        };
 
-        const reviewerName = form.name.trim() || "Anonymous";
-        const issueTitle = `Review Submission: ${form.rating}/5 from ${reviewerName}`;
-        const issueBody = [
-            "## App Review Submission",
-            `Name: ${reviewerName}`,
-            `Rating: ${form.rating}`,
-            `Platform: ${form.platform}`,
-            "Review:",
-            trimmedReview,
-            "",
-            "Consent: I agree this review may be published on thirdandmanageable.com.",
-        ].join("\n");
-
-        const issueUrl = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues/new?labels=${encodeURIComponent(
-            REVIEW_SUBMISSION_LABEL
-        )}&title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}`;
-
-        window.open(issueUrl, "_blank", "noopener,noreferrer");
-        setSubmitStarted(true);
-        setForm((previous) => ({
-            ...previous,
-            review: "",
-            rating: 0,
-        }));
+        setReviews((previous) => [nextReview, ...previous]);
+        setForm(INITIAL_FORM);
+        setFormError(null);
+        setIsModalOpen(false);
     }
 
     return (
@@ -229,246 +153,208 @@ export default function ReviewsPage() {
                             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-5">
                                 App Reviews
                             </h1>
-                            <p className="text-lg md:text-xl text-white/55 max-w-3xl mx-auto">
-                                Leave a rating and review for the app. Submissions go to a moderation queue before publication.
+                            <p className="text-lg md:text-xl text-white/55 max-w-3xl mx-auto mb-8">
+                                Post a review and it appears here right away.
                             </p>
+                            <button
+                                type="button"
+                                onClick={() => setIsModalOpen(true)}
+                                className="inline-flex items-center justify-center px-6 py-3 bg-white text-[#040485] font-semibold rounded-xl hover:bg-gray-100 transition-colors"
+                            >
+                                Post a Review
+                            </button>
                         </motion.div>
 
-                        <div className="grid lg:grid-cols-2 gap-8 lg:gap-10">
-                            <motion.section
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.6, delay: 0.1 }}
-                                className="rounded-2xl border border-white/15 bg-white/5 p-6 md:p-8"
-                            >
-                                <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
-                                    <div>
-                                        <h2 className="text-2xl md:text-3xl font-bold">Published Reviews</h2>
-                                        <p className="text-white/50 mt-1">
-                                            Approved by the Third & Manageable moderation team.
-                                        </p>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="text-xs uppercase tracking-widest text-white/40">Average Rating</p>
-                                        <p className="text-2xl font-bold">
-                                            {averageRating ? `${averageRating}/5` : "N/A"}
-                                        </p>
-                                    </div>
+                        <div className="rounded-2xl border border-white/15 bg-white/5 p-6 md:p-8">
+                            <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
+                                <div>
+                                    <h2 className="text-2xl md:text-3xl font-bold">Latest Reviews</h2>
+                                    <p className="text-white/50 mt-1">{reviews.length} total review{reviews.length === 1 ? "" : "s"}</p>
                                 </div>
+                                <div className="text-right">
+                                    <p className="text-xs uppercase tracking-widest text-white/40">Average Rating</p>
+                                    <p className="text-2xl font-bold">
+                                        {averageRating ? `${averageRating}/5` : "N/A"}
+                                    </p>
+                                </div>
+                            </div>
 
-                                {isLoadingReviews && (
-                                    <p className="text-white/50">Loading published reviews...</p>
-                                )}
+                            {!isLoaded && <p className="text-white/50">Loading reviews...</p>}
 
-                                {!isLoadingReviews && loadError && (
-                                    <p className="text-red-300">{loadError}</p>
-                                )}
-
-                                {!isLoadingReviews && !loadError && reviews.length === 0 && (
-                                    <p className="text-white/50">No published reviews yet. Be the first to submit one.</p>
-                                )}
-
-                                {!isLoadingReviews && !loadError && reviews.length > 0 && (
-                                    <div className="space-y-4">
-                                        {reviews.map((review) => (
-                                            <article
-                                                key={review.id}
-                                                className="rounded-xl border border-white/10 bg-white/5 p-5"
-                                            >
-                                                <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-                                                    <p className="font-semibold">{review.name}</p>
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="flex text-yellow-300">
-                                                            {[1, 2, 3, 4, 5].map((star) => (
-                                                                <StarIcon
-                                                                    key={star}
-                                                                    filled={star <= review.rating}
-                                                                    className="w-4 h-4"
-                                                                />
-                                                            ))}
-                                                        </div>
-                                                        <span className="text-xs text-white/40">
-                                                            {new Date(review.createdAt).toLocaleDateString()}
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                                <p className="text-white/70 leading-relaxed whitespace-pre-wrap">
-                                                    {review.review}
-                                                </p>
-                                                <a
-                                                    href={review.sourceUrl}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="mt-3 inline-block text-xs text-white/40 hover:text-white link-underline"
-                                                >
-                                                    View moderation source
-                                                </a>
-                                            </article>
-                                        ))}
-                                    </div>
-                                )}
-                            </motion.section>
-
-                            <motion.section
-                                initial={{ opacity: 0, x: 20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.6, delay: 0.2 }}
-                                className="rounded-2xl border border-white/15 bg-white/5 p-6 md:p-8"
-                            >
-                                <h2 className="text-2xl md:text-3xl font-bold mb-2">Leave a Review</h2>
-                                <p className="text-white/55 mb-8">
-                                    Your submission opens GitHub in a new tab with your review prefilled.
-                                </p>
-
-                                <form
-                                    onSubmit={(event) => {
-                                        event.preventDefault();
-                                        openGitHubSubmission();
-                                    }}
-                                    className="space-y-5"
-                                >
-                                    <div>
-                                        <label htmlFor="reviewer-name" className="block text-sm text-white/70 mb-2">
-                                            Name (optional)
-                                        </label>
-                                        <input
-                                            id="reviewer-name"
-                                            type="text"
-                                            value={form.name}
-                                            onChange={(event) =>
-                                                setForm((previous) => ({ ...previous, name: event.target.value }))
-                                            }
-                                            placeholder="Anonymous"
-                                            className="w-full rounded-xl border border-white/20 bg-transparent px-4 py-3 text-white placeholder:text-white/30 outline-none focus:border-white/60 transition-colors"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="review-platform" className="block text-sm text-white/70 mb-2">
-                                            Platform
-                                        </label>
-                                        <select
-                                            id="review-platform"
-                                            value={form.platform}
-                                            onChange={(event) =>
-                                                setForm((previous) => ({ ...previous, platform: event.target.value }))
-                                            }
-                                            className="w-full rounded-xl border border-white/20 bg-[#020256] px-4 py-3 text-white outline-none focus:border-white/60 transition-colors"
-                                        >
-                                            <option value="iOS">iOS</option>
-                                            <option value="Android">Android</option>
-                                            <option value="Both">Both</option>
-                                        </select>
-                                    </div>
-
-                                    <div>
-                                        <p className="block text-sm text-white/70 mb-2">Rating</p>
-                                        <div className="flex items-center gap-1 text-yellow-300">
-                                            {[1, 2, 3, 4, 5].map((star) => (
-                                                <button
-                                                    key={star}
-                                                    type="button"
-                                                    onClick={() =>
-                                                        setForm((previous) => ({ ...previous, rating: star }))
-                                                    }
-                                                    aria-label={`Set rating to ${star} star${star > 1 ? "s" : ""}`}
-                                                    className="p-1 hover:scale-110 transition-transform"
-                                                >
-                                                    <StarIcon filled={star <= form.rating} />
-                                                </button>
-                                            ))}
-                                            <span className="ml-2 text-sm text-white/60">
-                                                {form.rating > 0 ? `${form.rating}/5` : "Choose rating"}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label htmlFor="review-text" className="block text-sm text-white/70 mb-2">
-                                            Review
-                                        </label>
-                                        <textarea
-                                            id="review-text"
-                                            value={form.review}
-                                            onChange={(event) =>
-                                                setForm((previous) => ({ ...previous, review: event.target.value }))
-                                            }
-                                            rows={6}
-                                            placeholder="Share your experience with the app..."
-                                            className="w-full rounded-xl border border-white/20 bg-transparent px-4 py-3 text-white placeholder:text-white/30 outline-none focus:border-white/60 transition-colors resize-none"
-                                        />
-                                    </div>
-
-                                    {submitError && <p className="text-red-300 text-sm">{submitError}</p>}
-
-                                    {submitStarted && (
-                                        <p className="text-green-300 text-sm">
-                                            GitHub opened in a new tab. Submit the issue there to finish your review.
-                                        </p>
-                                    )}
-
+                            {isLoaded && reviews.length === 0 && (
+                                <div className="text-center py-10">
+                                    <p className="text-white/55 mb-5">No reviews yet. Be the first to post one.</p>
                                     <button
-                                        type="submit"
-                                        className="w-full rounded-xl bg-white text-[#040485] font-semibold px-5 py-3 hover:bg-gray-100 transition-colors"
+                                        type="button"
+                                        onClick={() => setIsModalOpen(true)}
+                                        className="inline-flex items-center justify-center px-5 py-2.5 border border-white/30 rounded-xl text-white/80 hover:bg-white/10 hover:text-white transition-colors"
                                     >
-                                        Submit Review
+                                        Post the First Review
                                     </button>
-                                </form>
-                            </motion.section>
-                        </div>
-                    </div>
-                </section>
-
-                <section className="section-alt">
-                    <div className="max-w-6xl mx-auto">
-                        <h2 className="text-3xl md:text-4xl font-bold text-[#040485] mb-4">
-                            No-Backend Moderation Workflow
-                        </h2>
-                        <p className="text-[#040485]/65 text-lg mb-8 max-w-4xl">
-                            One moderator can fully control publication directly in GitHub, without building a custom server.
-                        </p>
-                        <div className="grid md:grid-cols-2 gap-6">
-                            <div className="rounded-2xl border border-[#040485]/15 bg-white p-6">
-                                <p className="text-sm uppercase tracking-widest text-[#040485]/45 mb-3">Moderator Steps</p>
-                                <ol className="space-y-3 text-[#040485]/75">
-                                    <li>1. New submissions arrive as GitHub issues with label <code>review-submission</code>.</li>
-                                    <li>2. Check whether the review is legitimate.</li>
-                                    <li>3. Add label <code>review-approved</code> to publish on this page.</li>
-                                    <li>4. Close or delete issues that are spam or not legitimate.</li>
-                                </ol>
-                            </div>
-                            <div className="rounded-2xl border border-[#040485]/15 bg-white p-6">
-                                <p className="text-sm uppercase tracking-widest text-[#040485]/45 mb-3">Quick Access</p>
-                                <div className="space-y-3">
-                                    <a
-                                        href={`https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues?q=is%3Aissue+is%3Aopen+label%3A${encodeURIComponent(
-                                            REVIEW_SUBMISSION_LABEL
-                                        )}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="block text-[#040485] font-medium link-underline"
-                                    >
-                                        Open moderation queue
-                                    </a>
-                                    <a
-                                        href={`https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}/issues?q=is%3Aissue+is%3Aopen+label%3A${encodeURIComponent(
-                                            REVIEW_PUBLISHED_LABEL
-                                        )}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="block text-[#040485] font-medium link-underline"
-                                    >
-                                        Open published reviews label
-                                    </a>
-                                    <Link href="/app" className="block text-[#040485] font-medium link-underline">
-                                        Back to app page
-                                    </Link>
                                 </div>
-                            </div>
+                            )}
+
+                            {isLoaded && reviews.length > 0 && (
+                                <div className="space-y-4">
+                                    {reviews.map((review) => (
+                                        <article
+                                            key={review.id}
+                                            className="rounded-xl border border-white/10 bg-white/5 p-5"
+                                        >
+                                            <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+                                                <div>
+                                                    <p className="font-semibold">{review.name}</p>
+                                                    <p className="text-xs text-white/45">{review.platform}</p>
+                                                </div>
+                                                <div className="flex items-center gap-3">
+                                                    <div className="flex text-yellow-300">
+                                                        {[1, 2, 3, 4, 5].map((star) => (
+                                                            <StarIcon
+                                                                key={star}
+                                                                filled={star <= review.rating}
+                                                                className="w-4 h-4"
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                    <span className="text-xs text-white/40">
+                                                        {new Date(review.createdAt).toLocaleDateString()}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <p className="text-white/75 leading-relaxed whitespace-pre-wrap">
+                                                {review.text}
+                                            </p>
+                                        </article>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </section>
             </main>
+
+            {isModalOpen && (
+                <div className="fixed inset-0 z-[70] flex items-center justify-center px-4 py-8">
+                    <button
+                        type="button"
+                        aria-label="Close review modal"
+                        className="absolute inset-0 bg-black/70"
+                        onClick={closeModal}
+                    />
+
+                    <div
+                        role="dialog"
+                        aria-modal="true"
+                        className="relative z-10 w-full max-w-xl rounded-2xl border border-white/20 bg-[#040485] p-6 md:p-8 shadow-2xl"
+                    >
+                        <div className="flex items-start justify-between gap-4 mb-6">
+                            <div>
+                                <h2 className="text-2xl md:text-3xl font-bold">Post a Review</h2>
+                                <p className="text-white/55 mt-1">Share your app experience.</p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={closeModal}
+                                className="text-white/70 hover:text-white text-2xl leading-none"
+                                aria-label="Close"
+                            >
+                                x
+                            </button>
+                        </div>
+
+                        <form onSubmit={submitReview} className="space-y-5">
+                            <div>
+                                <label htmlFor="review-name" className="block text-sm text-white/70 mb-2">
+                                    Name (optional)
+                                </label>
+                                <input
+                                    id="review-name"
+                                    type="text"
+                                    value={form.name}
+                                    onChange={(event) =>
+                                        setForm((previous) => ({ ...previous, name: event.target.value }))
+                                    }
+                                    placeholder="Anonymous"
+                                    className="w-full rounded-xl border border-white/20 bg-transparent px-4 py-3 text-white placeholder:text-white/30 outline-none focus:border-white/60 transition-colors"
+                                />
+                            </div>
+
+                            <div>
+                                <label htmlFor="review-platform" className="block text-sm text-white/70 mb-2">
+                                    Platform
+                                </label>
+                                <select
+                                    id="review-platform"
+                                    value={form.platform}
+                                    onChange={(event) =>
+                                        setForm((previous) => ({ ...previous, platform: event.target.value }))
+                                    }
+                                    className="w-full rounded-xl border border-white/20 bg-[#020256] px-4 py-3 text-white outline-none focus:border-white/60 transition-colors"
+                                >
+                                    <option value="iOS">iOS</option>
+                                    <option value="Android">Android</option>
+                                    <option value="Both">Both</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <p className="block text-sm text-white/70 mb-2">Rating</p>
+                                <div className="flex items-center gap-1 text-yellow-300">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                        <button
+                                            key={star}
+                                            type="button"
+                                            onClick={() => setForm((previous) => ({ ...previous, rating: star }))}
+                                            aria-label={`Set rating to ${star} star${star > 1 ? "s" : ""}`}
+                                            className="p-1 hover:scale-110 transition-transform"
+                                        >
+                                            <StarIcon filled={star <= form.rating} />
+                                        </button>
+                                    ))}
+                                    <span className="ml-2 text-sm text-white/60">
+                                        {form.rating > 0 ? `${form.rating}/5` : "Choose rating"}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label htmlFor="review-text" className="block text-sm text-white/70 mb-2">
+                                    Review
+                                </label>
+                                <textarea
+                                    id="review-text"
+                                    value={form.text}
+                                    onChange={(event) =>
+                                        setForm((previous) => ({ ...previous, text: event.target.value }))
+                                    }
+                                    rows={6}
+                                    placeholder="Tell us what you think about the app..."
+                                    className="w-full rounded-xl border border-white/20 bg-transparent px-4 py-3 text-white placeholder:text-white/30 outline-none focus:border-white/60 transition-colors resize-none"
+                                />
+                            </div>
+
+                            {formError && <p className="text-red-300 text-sm">{formError}</p>}
+
+                            <div className="flex flex-col sm:flex-row gap-3">
+                                <button
+                                    type="button"
+                                    onClick={closeModal}
+                                    className="w-full rounded-xl border border-white/30 text-white/80 font-semibold px-5 py-3 hover:bg-white/10 hover:text-white transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="w-full rounded-xl bg-white text-[#040485] font-semibold px-5 py-3 hover:bg-gray-100 transition-colors"
+                                >
+                                    Submit Review
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
             <Footer />
         </>
     );
