@@ -11,6 +11,11 @@ const raleway = Raleway({
 export const metadata: Metadata = {
   title: "Third & Manageable | Athlete Wellness & Transition Platform",
   description: "Help athletes translate discipline into direction. A wellness and transition platform for athletes moving into the next phase of their lives.",
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/apple-icon.png",
+  },
 };
 
 export default function RootLayout({

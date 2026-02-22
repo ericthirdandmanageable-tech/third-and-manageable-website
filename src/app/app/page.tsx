@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -168,6 +169,20 @@ export default function AppPage() {
                                     <div className="text-lg font-semibold -mt-1">Google Play</div>
                                 </div>
                             </a>
+                        </motion.div>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 16 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.5, delay: 1 }}
+                            className="mt-6"
+                        >
+                            <Link
+                                href="/reviews"
+                                className="inline-flex items-center justify-center px-6 py-2.5 border border-white/30 rounded-xl text-white/80 hover:bg-white/10 hover:text-white transition-colors"
+                            >
+                                Rate the App
+                            </Link>
                         </motion.div>
                     </div>
                 </section>

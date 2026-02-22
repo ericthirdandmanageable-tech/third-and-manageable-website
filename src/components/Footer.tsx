@@ -8,6 +8,7 @@ const footerLinks = [
     { name: "Home", href: "/" },
     { name: "Spaces (Coming Soon)", href: "/spaces" },
     { name: "App", href: "/app" },
+    { name: "Reviews", href: "/reviews" },
     { name: "Merch", href: "/merch" },
     { name: "Community", href: "/community" },
 ];
@@ -154,7 +155,7 @@ export default function Footer() {
 
                     {/* Copyright */}
                     <p className="text-sm text-white/30">
-                        (c) {new Date().getFullYear()} Third & Manageable. All rights reserved.
+                        {"\u00A9"} {new Date().getFullYear()} Third & Manageable. All rights reserved.
                     </p>
                 </div>
             </div>
