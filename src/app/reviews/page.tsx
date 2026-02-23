@@ -1,11 +1,20 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useEffect, useMemo, useState } from "react";
+import {
+    addDoc,
+    collection,
+    limit,
+    onSnapshot,
+    orderBy,
+    query,
+    serverTimestamp,
+    Timestamp,
+} from "firebase/firestore";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
-const STORAGE_KEY = "third_and_manageable_reviews_v1";
+import { db, isFirebaseConfigured, missingFirebaseVars } from "@/lib/firebase";
 
 type Review = {
     id: string;
@@ -13,7 +22,16 @@ type Review = {
     platform: string;
     rating: number;
     text: string;
-    createdAt: string;
+    createdAtMs: number;
+};
+
+type ReviewDoc = {
+    name?: string;
+    platform?: string;
+    rating?: number;
+    text?: string;
+    createdAt?: Timestamp | null;
+    clientCreatedAt?: number;
 };
 
 type ReviewForm = {
@@ -50,48 +68,54 @@ function StarIcon({ filled, className = "w-6 h-6" }: { filled: boolean; classNam
 
 export default function ReviewsPage() {
     const [reviews, setReviews] = useState<Review[]>([]);
-    const [isLoaded, setIsLoaded] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [form, setForm] = useState<ReviewForm>(INITIAL_FORM);
     const [formError, setFormError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        try {
-            const raw = window.localStorage.getItem(STORAGE_KEY);
-            if (!raw) {
-                setIsLoaded(true);
-                return;
-            }
-
-            const parsed = JSON.parse(raw) as unknown;
-            if (Array.isArray(parsed)) {
-                const safeReviews = parsed.filter((item): item is Review => {
-                    return (
-                        typeof item === "object" &&
-                        item !== null &&
-                        typeof (item as Review).id === "string" &&
-                        typeof (item as Review).name === "string" &&
-                        typeof (item as Review).platform === "string" &&
-                        typeof (item as Review).rating === "number" &&
-                        typeof (item as Review).text === "string" &&
-                        typeof (item as Review).createdAt === "string"
-                    );
-                });
-                setReviews(safeReviews);
-            }
-        } catch (error) {
-            console.error("Failed to load reviews", error);
-        } finally {
-            setIsLoaded(true);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (!isLoaded) {
+        if (!isFirebaseConfigured || !db) {
+            setLoadError("Firebase is not configured yet.");
+            setIsLoading(false);
             return;
         }
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews));
-    }, [reviews, isLoaded]);
+
+        const reviewsQuery = query(collection(db, "reviews"), orderBy("createdAt", "desc"), limit(100));
+
+        const unsubscribe = onSnapshot(
+            reviewsQuery,
+            (snapshot) => {
+                const nextReviews = snapshot.docs.map((doc) => {
+                    const data = doc.data() as ReviewDoc;
+                    const createdAtMs = data.createdAt instanceof Timestamp
+                        ? data.createdAt.toDate().getTime()
+                        : (typeof data.clientCreatedAt === "number" ? data.clientCreatedAt : Date.now());
+
+                    return {
+                        id: doc.id,
+                        name: (data.name || "Anonymous").trim() || "Anonymous",
+                        platform: data.platform || "Unknown",
+                        rating: Math.max(1, Math.min(5, Number(data.rating ?? 5))),
+                        text: data.text || "",
+                        createdAtMs,
+                    };
+                });
+
+                setReviews(nextReviews);
+                setIsLoading(false);
+                setLoadError(null);
+            },
+            (error) => {
+                console.error("Failed to load reviews:", error);
+                setLoadError("Unable to load reviews right now.");
+                setIsLoading(false);
+            }
+        );
+
+        return () => unsubscribe();
+    }, []);
 
     const averageRating = useMemo(() => {
         if (reviews.length === 0) {
@@ -102,12 +126,20 @@ export default function ReviewsPage() {
     }, [reviews]);
 
     function closeModal() {
+        if (isSubmitting) {
+            return;
+        }
         setIsModalOpen(false);
         setFormError(null);
     }
 
-    function submitReview(event: React.FormEvent<HTMLFormElement>) {
+    async function submitReview(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
+
+        if (!isFirebaseConfigured || !db) {
+            setFormError("Firebase is not configured yet.");
+            return;
+        }
 
         const reviewText = form.text.trim();
         if (form.rating < 1 || form.rating > 5) {
@@ -120,19 +152,27 @@ export default function ReviewsPage() {
             return;
         }
 
-        const nextReview: Review = {
-            id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-            name: form.name.trim() || "Anonymous",
-            platform: form.platform,
-            rating: form.rating,
-            text: reviewText,
-            createdAt: new Date().toISOString(),
-        };
-
-        setReviews((previous) => [nextReview, ...previous]);
-        setForm(INITIAL_FORM);
+        setIsSubmitting(true);
         setFormError(null);
-        setIsModalOpen(false);
+
+        try {
+            await addDoc(collection(db, "reviews"), {
+                name: form.name.trim() || "Anonymous",
+                platform: form.platform,
+                rating: form.rating,
+                text: reviewText,
+                createdAt: serverTimestamp(),
+                clientCreatedAt: Date.now(),
+            });
+
+            setForm(INITIAL_FORM);
+            setIsModalOpen(false);
+        } catch (error) {
+            console.error("Failed to submit review:", error);
+            setFormError("Could not submit review. Please try again.");
+        } finally {
+            setIsSubmitting(false);
+        }
     }
 
     return (
@@ -169,7 +209,9 @@ export default function ReviewsPage() {
                             <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
                                 <div>
                                     <h2 className="text-2xl md:text-3xl font-bold">Latest Reviews</h2>
-                                    <p className="text-white/50 mt-1">{reviews.length} total review{reviews.length === 1 ? "" : "s"}</p>
+                                    <p className="text-white/50 mt-1">
+                                        {reviews.length} total review{reviews.length === 1 ? "" : "s"}
+                                    </p>
                                 </div>
                                 <div className="text-right">
                                     <p className="text-xs uppercase tracking-widest text-white/40">Average Rating</p>
@@ -179,9 +221,20 @@ export default function ReviewsPage() {
                                 </div>
                             </div>
 
-                            {!isLoaded && <p className="text-white/50">Loading reviews...</p>}
+                            {isLoading && <p className="text-white/50">Loading reviews...</p>}
 
-                            {isLoaded && reviews.length === 0 && (
+                            {!isLoading && loadError && (
+                                <div className="rounded-xl border border-red-300/40 bg-red-300/10 p-4 text-red-200">
+                                    <p>{loadError}</p>
+                                    {!isFirebaseConfigured && missingFirebaseVars.length > 0 && (
+                                        <p className="text-xs mt-2">
+                                            Missing env vars: {missingFirebaseVars.join(", ")}
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+
+                            {!isLoading && !loadError && reviews.length === 0 && (
                                 <div className="text-center py-10">
                                     <p className="text-white/55 mb-5">No reviews yet. Be the first to post one.</p>
                                     <button
@@ -194,7 +247,7 @@ export default function ReviewsPage() {
                                 </div>
                             )}
 
-                            {isLoaded && reviews.length > 0 && (
+                            {!isLoading && !loadError && reviews.length > 0 && (
                                 <div className="space-y-4">
                                     {reviews.map((review) => (
                                         <article
@@ -217,7 +270,7 @@ export default function ReviewsPage() {
                                                         ))}
                                                     </div>
                                                     <span className="text-xs text-white/40">
-                                                        {new Date(review.createdAt).toLocaleDateString()}
+                                                        {new Date(review.createdAtMs).toLocaleDateString()}
                                                     </span>
                                                 </div>
                                             </div>
@@ -339,15 +392,17 @@ export default function ReviewsPage() {
                                 <button
                                     type="button"
                                     onClick={closeModal}
-                                    className="w-full rounded-xl border border-white/30 text-white/80 font-semibold px-5 py-3 hover:bg-white/10 hover:text-white transition-colors"
+                                    disabled={isSubmitting}
+                                    className="w-full rounded-xl border border-white/30 text-white/80 font-semibold px-5 py-3 hover:bg-white/10 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
-                                    className="w-full rounded-xl bg-white text-[#040485] font-semibold px-5 py-3 hover:bg-gray-100 transition-colors"
+                                    disabled={isSubmitting}
+                                    className="w-full rounded-xl bg-white text-[#040485] font-semibold px-5 py-3 hover:bg-gray-100 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
                                 >
-                                    Submit Review
+                                    {isSubmitting ? "Submitting..." : "Submit Review"}
                                 </button>
                             </div>
                         </form>

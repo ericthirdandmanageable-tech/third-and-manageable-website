@@ -20,6 +20,27 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Firebase Reviews Setup
+
+1. Copy `.env.example` to `.env.local`.
+2. Fill in your Firebase web config values.
+3. Create a Firestore database in Firebase.
+4. Create a `reviews` collection (documents are created automatically by the app).
+5. Restart the dev server after editing env vars.
+
+Example Firestore rules for open public reviews:
+
+```txt
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /reviews/{reviewId} {
+      allow read, write: if true;
+    }
+  }
+}
+```
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
