@@ -1,9 +1,9 @@
-const CALLBACK_HTML = `<!doctype html>
+const RECOVERY_HTML = `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Third &amp; Manageable | Signing In</title>
+    <title>Third &amp; Manageable | Reset Password</title>
     <style>
       * {
         box-sizing: border-box;
@@ -61,7 +61,7 @@ const CALLBACK_HTML = `<!doctype html>
   <body>
     <main class="card">
       <div class="spinner"></div>
-      <h1>Redirecting to app...</h1>
+      <h1>Opening password reset...</h1>
       <p>If you are not redirected in a moment, tap the button below.</p>
       <a id="open-app" href="#">Open Third &amp; Manageable</a>
     </main>
@@ -69,10 +69,10 @@ const CALLBACK_HTML = `<!doctype html>
       (function () {
         var query = window.location.search || "";
         var hash = window.location.hash || "";
-        var appUrl = "thirdandmanageableapp://oauth" + query + hash;
+        var appUrl = "thirdandmanageableapp://reset-password" + query + hash;
         var isAndroid = /android/i.test(navigator.userAgent || "");
         var intentUrl =
-          "intent://oauth" +
+          "intent://reset-password" +
           query +
           "#Intent;scheme=thirdandmanageableapp;package=com.thirdandmanageable.app;end";
         var openButton = document.getElementById("open-app");
@@ -96,7 +96,7 @@ const CALLBACK_HTML = `<!doctype html>
 `;
 
 export function GET() {
-  return new Response(CALLBACK_HTML, {
+  return new Response(RECOVERY_HTML, {
     status: 200,
     headers: {
       "Content-Type": "text/html; charset=utf-8",
