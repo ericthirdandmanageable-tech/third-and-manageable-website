@@ -158,6 +158,16 @@ export default function PrivacyPage() {
                                 <p className="text-white/50 leading-relaxed">
                                     For website users, you may request data deletion by contacting us at the email below.
                                 </p>
+                                <p className="text-white/50 leading-relaxed">
+                                    We also provide a dedicated account deletion page at{" "}
+                                    <a
+                                        href="/account-deletion"
+                                        className="text-white underline hover:no-underline"
+                                    >
+                                        /account-deletion
+                                    </a>{" "}
+                                    with step-by-step instructions and deletion details.
+                                </p>
                             </div>
                         </section>
 

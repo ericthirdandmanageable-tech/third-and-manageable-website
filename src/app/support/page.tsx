@@ -32,7 +32,7 @@ const faqItems = [
     {
         question: "How do I delete my account?",
         answer:
-            "In the app, open Profile > Delete Account. If you cannot access the app, email support and we can help complete the request.",
+            "In the app, open Profile > Delete Account. If you cannot access the app, use the Account Deletion page on our website or email support and we can help complete the request.",
     },
     {
         question: "I cannot log in. What should I do?",
@@ -145,6 +145,12 @@ export default function SupportPage() {
                                 className="inline-flex items-center justify-center px-5 py-2.5 border border-white/30 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
                             >
                                 Terms and Conditions
+                            </Link>
+                            <Link
+                                href="/account-deletion"
+                                className="inline-flex items-center justify-center px-5 py-2.5 border border-white/30 rounded-lg text-white/80 hover:text-white hover:bg-white/10 transition-colors"
+                            >
+                                Account Deletion
                             </Link>
                             <Link
                                 href="/reviews"
